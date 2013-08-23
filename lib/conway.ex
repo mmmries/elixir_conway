@@ -1,4 +1,12 @@
 defmodule Conway do
+  def run(board) do
+    IO.write("\e[H\e[2J")
+    IO.puts board
+    :timer.sleep 1000
+    board = next_frame(board)
+    run(board)
+  end
+
   def next_frame(board) do
     board |> parse_board |> execute_rules |> serialize_board
   end
