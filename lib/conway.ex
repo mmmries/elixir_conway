@@ -2,7 +2,7 @@ defmodule Conway do
   def run(board) do
     IO.write("\e[H\e[2J")
     IO.puts board
-    :timer.sleep 100
+    :timer.sleep 200
     board |> next_frame |> run
   end
 
