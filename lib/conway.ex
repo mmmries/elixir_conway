@@ -18,8 +18,8 @@ defmodule Conway do
     end
   end
 
-  defp neighbors(coords,board) do
-    neighbor_coords(coords) |> Enum.map cell_at(&1,board)
+  defp neighbors(xy,board) do
+    neighbor_coords(xy) |> Enum.map cell_at(&1,board)
   end
 
   defp neighbor_coords({x,y}) do
