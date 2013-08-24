@@ -11,32 +11,38 @@ defmodule Conway do
   end
 
   defp next_board(board) do
-    Enum.map Enum.with_index(board), fn {row, y} ->
-      Enum.map Enum.with_index(row), fn {cell, x} ->
-        living_neighbors = count_neighbors(board, x, y)
-        next_generation(cell, living_neighbors)
+    board |> Enum.with_index |> Enum.map fn {row,y} ->
+      row |> Enum.with_index |> Enum.map fn {cell,x} ->
+        neighbors({x,y},board) |> count_living |> next_generation(cell)
       end
     end
   end
 
-  defp count_neighbors(board, x, y) do
-    list = [cell_at(board,x-1,y-1), cell_at(board, x, y-1), cell_at(board, x+1, y-1),
-            cell_at(board,x-1,y  ),                         cell_at(board, x+1, y  ),
-            cell_at(board,x-1,y+1), cell_at(board, x, y+1), cell_at(board, x+1, y+1)]
-    living = Enum.filter(list, fn cell -> cell == "o" end)
-    length(living)
+  defp neighbors(coords,board) do
+    neighbor_coords(coords) |> Enum.map cell_at(&1,board)
   end
 
-  defp cell_at(_board, x, y) when (x < 0 or y < 0), do:  "."
+  defp neighbor_coords({x,y}) do
+    [
+      {x-1,y-1},{x  ,y-1},{x+1,y-1},
+      {x-1,y  },          {x+1,y  },
+      {x-1,y+1},{x  ,y+1},{x+1,y+1}
+    ]
+  end
 
-  defp cell_at(board, x, y) do
+  defp count_living(list) do
+    list |> Enum.filter(fn cell -> cell == "o" end) |> length
+  end
+
+  defp cell_at({x,y}, _board) when (x<0 or y<0), do: "."
+
+  defp cell_at({x,y}, board) do
     Enum.at(Enum.at(board, y, []),x, ".")
   end
 
 
-
-  defp next_generation("o", live_neighbors) when live_neighbors in 2..3, do: "o"
-  defp next_generation("o", _live_neighbors), do: "."
-  defp next_generation(".", live_neighbors) when live_neighbors == 3, do: "o"
-  defp next_generation(".", _live_neighbors), do: "."
+  defp next_generation(live_neighbors,"o") when live_neighbors in 2..3, do: "o"
+  defp next_generation(_live_neighbors,"o"), do: "."
+  defp next_generation(live_neighbors,".") when live_neighbors == 3, do: "o"
+  defp next_generation(_live_neighbors,"."), do: "."
 end
