@@ -19,7 +19,7 @@ defmodule Conway do
   end
 
   defp neighbors(xy,board) do
-    neighbor_coords(xy) |> Enum.map cell_at(&1,board)
+    neighbor_coords(xy) |> Enum.map Board.cell_at(&1,board)
   end
 
   defp neighbor_coords({x,y}) do
@@ -32,12 +32,6 @@ defmodule Conway do
 
   defp count_living(list) do
     list |> Enum.filter(fn cell -> cell == "o" end) |> length
-  end
-
-  defp cell_at({x,y}, _board) when (x<0 or y<0), do: "."
-
-  defp cell_at({x,y}, board) do
-    Enum.at(Enum.at(board, y, []),x, ".")
   end
 
 

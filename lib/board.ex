@@ -10,6 +10,12 @@ defmodule Board do
     board |> Enum.map(serialize_row(&1)) |> Enum.join
   end
 
+  def cell_at({x,y}, _board) when (x<0 or y<0), do: "."
+
+  def cell_at({x,y}, board) do
+    Enum.at(Enum.at(board, y, []),x, ".")
+  end
+
   defp serialize_row(row) do
     (row |> Enum.join) <> "\n"
   end
