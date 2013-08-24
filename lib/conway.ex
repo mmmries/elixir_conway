@@ -1,31 +1,16 @@
 defmodule Conway do
-  def run(board) do
+  def run(frame) do
     IO.write("\e[H\e[2J")
-    IO.puts board
+    IO.puts frame
     :timer.sleep 200
-    board |> next_frame |> run
+    frame |> next_frame |> run
   end
 
-  def next_frame(board) do
-    board |> parse_board |> execute_rules |> serialize_board
+  def next_frame(frame) do
+    frame |> Board.parse_frame |> next_board |> Board.serialize_board
   end
 
-  defp serialize_board(board) do
-    rows = Enum.map(board, fn(row) ->
-      row_str = Enum.join(row)
-      "#{row_str}\n"
-    end)
-    rows |> Enum.join
-  end
-
-  defp parse_board(binary) do
-    rows = Regex.scan(%r/^[.o]+$/m, binary)
-    Enum.map rows, fn row_matches ->
-      String.graphemes(Enum.at(row_matches,0))
-    end
-  end
-
-  defp execute_rules(board) do
+  defp next_board(board) do
     Enum.map Enum.with_index(board), fn {row, y} ->
       Enum.map Enum.with_index(row), fn {cell, x} ->
         living_neighbors = count_neighbors(board, x, y)
